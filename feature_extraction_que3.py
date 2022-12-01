@@ -2,16 +2,25 @@ import os
 import csv
 from collections import Counter
 import xml.etree.ElementTree as ET
+import pandas as pd
 
 
 
 def extract_permission(file):
-    root = ET.parse(file).getroot()
+    try:
+     root = ET.parse(file).getroot()
+    except:
+        print("error in file:%s" %(file))
+        return[]
+    else:
+        root = ET.parse(file).getroot()
     permissions=[]
     permission=[]
     permission+= root.findall("uses-permission")
     #permission+= root.findall("uses-feature")
     #permission+= root.findall("permission")
+    #for instance in root.findall('application/receiver/intent-filter/action'):
+     #permission+= [instance]
     for perm in permission :
      for att in perm.attrib:
         permissions += [ perm.attrib[att]] 
@@ -45,12 +54,10 @@ def boolean_array(permission_array,permissions):
 
 
 path = '/Users/teja/Downloads/data_set'
-filename = '/Users/teja/Downloads/data_sets/data_set_features_1.csv'
+filename = '/Users/teja/Downloads/data_sets/additional_data_set_features.csv'
 permission_array,app_permissions=permission_data(path)
-#print(app_permissions)
+print(permission_array)
 write_to_csv(permission_array,"app_name")
 for app_name in app_permissions:
     permissions=app_permissions[app_name]
-    #print(app_name)
-    #print(boolean_array(permission_array,permissions))
-    write_to_csv(boolean_array(permission_array,permissions),app_name)
+   # write_to_csv(boolean_array(permission_array,permissions),app_name)
